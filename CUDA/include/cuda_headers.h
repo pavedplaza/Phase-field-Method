@@ -1,7 +1,7 @@
 /**
  * @file cuda_headers.h
  * @brief CUDA通用头文件和工具宏
- * @author PhaseFieldCUDA Team
+ * @author pavedplaza
  * @date 2025-02-15
  *
  * 包含所有CUDA相关的头文件和常用宏定义
