@@ -1,7 +1,7 @@
 /**
  * @file cuda_utils.h
  * @brief CUDA工具函数声明
- * @author PhaseFieldCUDA Team
+ * @author pavedplaza
  * @date 2025-02-26
  *
  * 声明CUDA内存管理和GPU信息查询函数
