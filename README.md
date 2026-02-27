@@ -3,10 +3,6 @@
 **🎓 This code is not just for research - it's also fascinating to watch dendrites grow in real-time!**
 **Whether you're a materials science student, a physics enthusiast, or just curious about pattern formation, watching six-fold symmetric dendrites grow from a tiny seed is mesmerizing.**
 
-**🔔 Watch this repository for updates and new features**
-**🚀 COMING SOON: CUDA-based GPU parallelization for massive speedup!**
-**We're actively working on a GPU-accelerated version that will leverage NVIDIA CUDA for 10-100x faster simulations. Stay tuned!**
-
 # Concentration-Phase Field Method for Dendritic Growth
 
 An educational Concentration-phase-field method implementation perfect for PFM beginners to learn detailed simulation techniques. Based on the anisotropic Allen-Cahn equation, solved using finite difference method (forward Euler in time, five-point central difference in space), implementing dimensionless phase-field method with rigorous concentration-field coupling for six-fold / four-fold symmetric dendritic growth in binary alloy solidification.
@@ -26,6 +22,12 @@ An educational Concentration-phase-field method implementation perfect for PFM b
 <video src="https://github.com/user-attachments/assets/6628695f-00f5-48e8-8ad1-93370805df96" controls="controls" width="100%"></video>
 
 Six-fold symmetric dendrite growing from a central seed. The video shows simultaneous evolution of three fields in subplots.
+
+**Performance**: GPU parallel computing completes the simulation in just **391ms**, achieving a **388× speedup** compared to MATLAB CPU single-core serial computing (152s).
+
+**Test Environment**:
+- **CPU**: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics @ 3.80 GHz
+- **GPU**: 4GB NVIDIA GeForce RTX 3050 Laptop GPU
 
 ### Example 2: Velocity Field Effects
 
@@ -47,6 +49,30 @@ Dendrite growing under uniform flow (forced convection). The flow breaks the six
 
 Tip curvature radius and growth velocity vary with λ
 
+---
+
+## 🚀 CUDA GPU Demonstration
+
+**Million-grid computing**: 1000×1000 grid, 50τ₀ simulation completed in just **22.3 seconds**
+
+<video src="CUDA/dendritic_growth_CUDA.mp4" controls="controls" width="100%"></video>
+
+**Key Features**:
+- **Massive speedup**: 388× faster than MATLAB (391ms vs 152s for basic simulation)
+- **Complete physics**: Phase field (5 terms) + Concentration field (3 terms)
+- **High performance**: Optimized for RTX 30-series GPUs
+- **Easy visualization**: MATLAB integration for results analysis
+
+**Quick Start**:
+```powershell
+cd CUDA
+.\build_ninja_devcmd.bat
+```
+
+⚠️ **Note**: CUDA version requires complex environment configuration (CUDA Toolkit, CMake, compilers). If you encounter issues running the CUDA version, it is most likely due to incorrect environment configuration. **For beginners, we recommend using the MATLAB version** for easier setup and usage.
+
+---
+
 ### Troubleshooting Guide
 
 If you encounter errors, bugs, or unphysical phenomena:
@@ -61,6 +87,8 @@ If you encounter errors, bugs, or unphysical phenomena:
 - Important notes about velocity field implementation
 
 **Step 4**: Report on [GitHub Issues](https://github.com/pavedplaza/phase-field-dendrite-basic/issues)
+
+---
 
 ## Table of Contents
 
@@ -176,19 +204,31 @@ All functions in `PFM_core/` folder handle tip tracking and analysis:
 #### Phase Field Equation
 
 ```
-∂φ/∂t = ∇·[A(ψ)^2 ∇φ] - ∂/∂x [A(ψ) A(ψ)' ∂φ/∂y] + ∂/∂y [A(ψ) A(ψ)' ∂φ/∂x] + φ(1 - φ^2) - λ(1 - φ^2)^2 (θ + k U)
+A(ψ)² * [ k * (1 + (1 - k) * U) ] ∂φ/∂t  = ∇·[ A(ψ)² ∇φ ]
+            - ∂/∂x [ A(ψ) A'(ψ) ∂φ/∂y ]
+            + ∂/∂y [ A(ψ) A'(ψ) ∂φ/∂x ]
+            + φ (1 - φ²)
+            - λ (1 - φ²)² ( θ + k * U )
 ```
 
 Where:
 - `ϕ` (phi): Phase field (ϕ=1 solid, ϕ=-1 liquid)
 - `k`: Partition coefficient
 - `λ` (lambda): Coupling constant
-- `ε` (epsilon): Anisotropy strength
+- `A(ψ)`: Anisotropy function
 
 #### Concentration Field Equation
 
 ```
-[(1+k)-(1-k)φ]/2 * ∂U/∂t = ∇·[ D (1-φ)/2 ∇U + (1+(1-k)U)/(2√2) * (∂φ/∂t) * (∇φ/|∇φ|) ] + (1+(1-k)U)/2 * ∂φ/∂t - (1-φ)(1-k)/4 * U · { [1+k-(1-k)φ] ∇U - [1+(1-k)U] ∇φ }
+```
+```
+[ (1+k) - (1-k)φ ] / 2 * ∂U/∂t =
+    ∇·[ D * (1-φ)/2 * ∇U
+        + (1 + (1-k)U)/(2√2) * (∂φ/∂t) * (∇φ / |∇φ|) ]
+    + [1 + (1-k)U]/2 * ∂φ/∂t
+    - (1-φ)(1-k)/4 * v * {
+        [1 + k - (1-k)φ] ∇U - [1 + (1-k)U] ∇φ
+      }
 ```
 
 Where:
@@ -196,21 +236,12 @@ Where:
 - `D`: Diffusion coefficient
 - `v`: Velocity field
 
-#### Anisotropy Function
-
-```
-ε(θ) = ε₀[1 + δ cos(m(θ - θ₀))]
-```
-
-For six-fold symmetry (m=6):
-- Preferred growth directions at 0°, 60°, 120°, 180°, 240°, 300°
-
 ---
 
 #### Numerical Method
 
 - **Spatial discretization**: Finite difference with 5-point stencil
-- **Time integration**: Explicit Euler scheme
+- **Time integration**: Explicit Euler scheme  
 - **Time step**: Calculated based on CFL condition: `dt = safety_factor * dx² / (4D)`
 - **Boundary conditions**: Periodic or zero-gradient
 
@@ -411,7 +442,7 @@ params.m_aniso = 4;                   % Must be 6, not 4
 
 ---
 
-**Last Updated**: 2026-02-11
+**Last Updated**: 2026-02-27
 
 **Maintainer**: pavedplaza <2300837983@qq.com>
 

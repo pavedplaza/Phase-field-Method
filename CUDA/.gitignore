@@ -1,0 +1,65 @@
+# CMake build directory
+build/
+build*/
+
+# Compiled executables
+*.exe
+*.out
+*.app
+simulation_cuda
+
+# Object files
+*.o
+*.obj
+*.cu.o
+
+# Editor temp files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+*.user
+
+# Output files
+*.bin
+*.dat
+*.mat
+phi_final*
+U_final*
+results/
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# MEX files (MATLAB)
+*.mexw64
+*.mexa64
+*.mexmaci64
+
+# MATLAB auto-save files
+*.asv
+
+# Video files
+*.mp4
+*.avi
+*.mov
+
+# Generated images
+CCinf_*.png
+timeline_summary.png
+phi_*.png
+U_*.png
+comparison_*.png
