@@ -55,7 +55,7 @@ Tip curvature radius and growth velocity vary with λ
 
 **Million-grid computing**: 1000×1000 grid, 50τ₀ simulation completed in just **22.3 seconds**
 
-<video src="CUDA/dendritic_growth_CUDA.mp4" controls="controls" width="100%"></video>
+<video src="[CUDA/dendritic_growth_CUDA.mp4](https://github.com/pavedplaza/phase-field-dendrite-basic/issues/2#issue-3998786834)" controls="controls" width="100%"></video>
 
 **Key Features**:
 - **Massive speedup**: 388× faster than MATLAB (391ms vs 152s for basic simulation)
