@@ -1,7 +1,7 @@
 /**
  * @file phase_field_kernel.cu
  * @brief 相场法CUDA Kernels实现
- * @author PhaseFieldCUDA Team
+ * @author pavedplaza
  * @date 2025-02-26
  *
  * Phase 1: 基础CUDA kernel框架
