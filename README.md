@@ -69,6 +69,12 @@ cd CUDA
 .\build_ninja_devcmd.bat
 ```
 
+**Configuration**: To modify simulation parameters (grid size, material properties, etc.) of CUDA version, edit the `CUDA/include/phase_field_params.h` file. After modifying parameters, **delete the previously compiled executable file** (e.g., `build/simulation_cuda.exe`) before rebuilding. This ensures the new parameters take effect.
+
+**Visualization**:
+1. After running the executable, the simulation outputs binary files (`phi_final.bin` and `U_final.bin`) containing the phase and concentration fields.
+2. Visualize CUDA binary output files using view_results.m and generate_growth_video.m. Make sure MATLAB's current directory is set to the correct folder where the `.bin` files are located, otherwise the scripts won't find the data.
+
 ⚠️ **Note**: CUDA version requires complex environment configuration (CUDA Toolkit, CMake, compilers). If you encounter issues running the CUDA version, it is most likely due to incorrect environment configuration. **For beginners, we recommend using the MATLAB version** for easier setup and usage.
 
 ---
